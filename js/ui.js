@@ -36,7 +36,7 @@ function setupUI(msalInstance) {
     fetchBtn.addEventListener('click', async () => {
         try {
             responseElement.textContent = 'Loading...';
-            const data = await fetchUserData(msalInstance);
+            const data = await fetchTodoLists(msalInstance);
             responseElement.textContent = JSON.stringify(data, null, 2);
         } catch (error) {
             responseElement.textContent = `Error: ${error.message}`;

@@ -7,5 +7,5 @@ const msalConfig = {
 };
 
 const loginRequest = {
-    scopes: ['User.Read']
+    scopes: ['Tasks.Read']
 };
