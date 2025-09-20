@@ -309,16 +309,35 @@ function setupUI(msalInstance) {
         const form = e.target;
         const taskId = form.dataset.taskId;
         
-        // Get selected values from toggle buttons
+        // Get form values
+        const titleValue = document.getElementById('editTitle').value.trim();
         const selectedStatus = document.querySelector('#editStatus .toggle-btn.active')?.dataset.value;
         const selectedImportance = document.querySelector('#editImportance .toggle-btn.active')?.dataset.value;
+        const bodyContent = document.getElementById('editBody').value.trim();
         
+        // Validate required fields
+        if (!titleValue) {
+            responseElement.textContent = 'Error: Title is required';
+            return;
+        }
+        
+        if (!selectedStatus) {
+            responseElement.textContent = 'Error: Please select a status';
+            return;
+        }
+        
+        if (!selectedImportance) {
+            responseElement.textContent = 'Error: Please select an importance level';
+            return;
+        }
+        
+        // Build updates object
         const updates = {
+            title: titleValue,
             status: selectedStatus,
             importance: selectedImportance
         };
         
-        const bodyContent = document.getElementById('editBody').value.trim();
         if (bodyContent) {
             updates.body = bodyContent;
         }

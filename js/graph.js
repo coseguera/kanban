@@ -76,6 +76,10 @@ async function updateTodoItem(msalInstance, listId, taskId, updates) {
     // Build the update object from the provided updates
     const updateBody = {};
     
+    if (updates.title !== undefined) {
+        updateBody.title = updates.title;
+    }
+    
     if (updates.status !== undefined) {
         updateBody.status = updates.status;
     }
