@@ -11,9 +11,12 @@ function setupUI(msalInstance) {
     const notStartedItems = document.getElementById('notStartedItems');
     const inProgressItems = document.getElementById('inProgressItems');
     const completedItems = document.getElementById('completedItems');
-    const createListModal = document.getElementById('createListModal');
-    const newListName = document.getElementById('newListName');
-    const createListForm = document.getElementById('createListForm');
+    const listModal = document.getElementById('listModal');
+    const listForm = document.getElementById('listForm');
+    const listNameInput = document.getElementById('listNameInput');
+    const listModalTitle = document.getElementById('listModalTitle');
+    const saveListBtn = document.getElementById('saveListBtn');
+    const deleteListBtn = document.getElementById('deleteList');
 
     async function loadTodoLists() {
         try {
@@ -46,9 +49,38 @@ function setupUI(msalInstance) {
         if (data.value && data.value.length > 0) {
             data.value.forEach(list => {
                 const listItem = document.createElement('li');
-                listItem.textContent = list.displayName;
+                
+                // Create content with list name
+                const listText = document.createElement('span');
+                listText.textContent = list.displayName;
+                listText.style.flex = '1';
+                listText.style.cursor = 'pointer';
+                
+                // Create icons container
+                const iconsContainer = document.createElement('div');
+                iconsContainer.style.display = 'flex';
+                iconsContainer.style.alignItems = 'center';
+                
+                // Create edit icon
+                const editIcon = document.createElement('span');
+                editIcon.className = 'edit-icon';
+                editIcon.textContent = '⋯';
+                editIcon.addEventListener('click', async (e) => {
+                    e.stopPropagation(); // Prevent list click event
+                    showListModal('edit', list);
+                });
+                
+                iconsContainer.appendChild(editIcon);
+                
+                listItem.appendChild(listText);
+                listItem.appendChild(iconsContainer);
+                
                 listItem.style.cursor = 'pointer';
-                listItem.addEventListener('click', () => loadTodoItems(list.id, list.displayName));
+                listItem.style.justifyContent = 'space-between';
+                
+                // Add click event to the text area only (not the icon)
+                listText.addEventListener('click', () => loadTodoItems(list.id, list.displayName));
+                
                 todoListsElement.appendChild(listItem);
             });
             responseElement.textContent = '';
@@ -562,63 +594,118 @@ function setupUI(msalInstance) {
         }
     }
 
-    async function createNewList() {
-        const listName = newListName.value.trim();
+    function showListModal(mode, list = null) {
+        listModal.style.display = 'flex';
+        listNameInput.value = '';
+        responseElement.textContent = '';
+        
+        if (mode === 'create') {
+            listModalTitle.textContent = '📝 Create New List';
+            saveListBtn.textContent = 'Create List';
+            deleteListBtn.style.display = 'none';
+            listForm.removeAttribute('data-list-id');
+        } else if (mode === 'edit' && list) {
+            listModalTitle.textContent = '✏️ Edit List';
+            saveListBtn.textContent = 'Save Changes';
+            deleteListBtn.style.display = 'inline-block';
+            listNameInput.value = list.displayName;
+            listForm.dataset.listId = list.id;
+        }
+        
+        listNameInput.focus();
+    }
+
+    function hideListModal() {
+        listModal.style.display = 'none';
+        listNameInput.value = '';
+        responseElement.textContent = '';
+        listForm.removeAttribute('data-list-id');
+        // Reset delete button text
+        deleteListBtn.textContent = 'Delete List';
+    }
+
+    async function saveList() {
+        const listName = listNameInput.value.trim();
+        const listId = listForm.dataset.listId;
+        const isEdit = !!listId;
+        
         if (!listName) {
             responseElement.textContent = 'Please enter a list name';
-            newListName.focus();
+            listNameInput.focus();
             return;
         }
 
         // Validate list name length
         if (listName.length > 100) {
             responseElement.textContent = 'List name must be 100 characters or less';
-            newListName.focus();
+            listNameInput.focus();
             return;
         }
 
         try {
-            responseElement.textContent = 'Creating list...';
-            const submitBtn = createListForm.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            newListName.disabled = true;
+            responseElement.textContent = isEdit ? 'Updating list...' : 'Creating list...';
+            saveListBtn.disabled = true;
+            listNameInput.disabled = true;
             
-            await createTodoList(msalInstance, listName);
+            if (isEdit) {
+                await updateTodoList(msalInstance, listId, listName);
+            } else {
+                await createTodoList(msalInstance, listName);
+            }
             
-            // Clear the input and close modal
-            newListName.value = '';
-            hideCreateListModal();
-            
-            // Refresh the lists to show the new list
+            // Close modal and refresh lists
+            hideListModal();
             await loadTodoLists();
-            responseElement.textContent = 'List created successfully!';
+            responseElement.textContent = isEdit ? 'List updated successfully!' : 'List created successfully!';
             
             // Clear success message after 2 seconds
             setTimeout(() => {
-                if (responseElement.textContent === 'List created successfully!') {
+                if (responseElement.textContent.includes('successfully!')) {
                     responseElement.textContent = '';
                 }
             }, 2000);
         } catch (error) {
-            responseElement.textContent = `Error creating list: ${error.message}`;
+            responseElement.textContent = `Error ${isEdit ? 'updating' : 'creating'} list: ${error.message}`;
         } finally {
-            const submitBtn = createListForm.querySelector('button[type="submit"]');
-            submitBtn.disabled = false;
-            newListName.disabled = false;
+            saveListBtn.disabled = false;
+            listNameInput.disabled = false;
         }
     }
 
-    function showCreateListModal() {
-        createListModal.style.display = 'flex';
-        newListName.value = '';
-        newListName.focus();
-        responseElement.textContent = '';
-    }
-
-    function hideCreateListModal() {
-        createListModal.style.display = 'none';
-        newListName.value = '';
-        responseElement.textContent = '';
+    async function deleteListHandler() {
+        const listId = listForm.dataset.listId;
+        
+        if (!listId) return;
+        
+        // Check if this is the confirmation click
+        if (deleteListBtn.textContent === 'Confirm Delete') {
+            try {
+                responseElement.textContent = 'Deleting list...';
+                await deleteTodoList(msalInstance, listId);
+                
+                // Close modal and refresh lists
+                hideListModal();
+                await loadTodoLists();
+                responseElement.textContent = 'List deleted successfully!';
+                
+                // Clear success message after 2 seconds
+                setTimeout(() => {
+                    if (responseElement.textContent === 'List deleted successfully!') {
+                        responseElement.textContent = '';
+                    }
+                }, 2000);
+                
+                // Reset button text for next time
+                deleteListBtn.textContent = 'Delete List';
+            } catch (error) {
+                responseElement.textContent = `Error deleting list: ${error.message}`;
+                // Reset button text on error
+                deleteListBtn.textContent = 'Delete List';
+            }
+        } else {
+            // First click - change button text to confirm
+            deleteListBtn.textContent = 'Confirm Delete';
+        }
     }
 
     // Event listeners
@@ -628,29 +715,30 @@ function setupUI(msalInstance) {
         responseElement.textContent = '';
     });
 
-    newListBtn.addEventListener('click', showCreateListModal);
+    newListBtn.addEventListener('click', () => showListModal('create'));
 
-    // Create list modal event listeners
-    createListForm.addEventListener('submit', (e) => {
+    // List modal event listeners
+    listForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        createNewList();
+        saveList();
     });
 
-    document.getElementById('cancelCreateList').addEventListener('click', hideCreateListModal);
-    document.getElementById('closeCreateListModal').addEventListener('click', hideCreateListModal);
+    document.getElementById('cancelList').addEventListener('click', hideListModal);
+    document.getElementById('closeListModal').addEventListener('click', hideListModal);
+    deleteListBtn.addEventListener('click', deleteListHandler);
 
     // Close modal when clicking outside
-    createListModal.addEventListener('click', (e) => {
-        if (e.target === createListModal) {
-            hideCreateListModal();
+    listModal.addEventListener('click', (e) => {
+        if (e.target === listModal) {
+            hideListModal();
         }
     });
 
     // Enter key support for list name input
-    newListName.addEventListener('keypress', (e) => {
+    listNameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            createNewList();
+            saveList();
         }
     });
 
@@ -659,14 +747,6 @@ function setupUI(msalInstance) {
     newTaskTitle.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             createNewTask();
-        }
-    });
-
-    createListBtn.addEventListener('click', createNewList);
-    
-    newListName.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            createNewList();
         }
     });
 

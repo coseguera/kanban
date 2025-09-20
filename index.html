@@ -105,23 +105,24 @@
             </div>
         </div>
         
-        <!-- Create List Modal -->
-        <div id="createListModal" class="modal" style="display: none;">
+        <!-- List Modal (Create/Edit) -->
+        <div id="listModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>📝 Create New List</h2>
-                    <span class="close-btn" id="closeCreateListModal">&times;</span>
+                    <h2 id="listModalTitle">📝 Create New List</h2>
+                    <span class="close-btn" id="closeListModal">&times;</span>
                 </div>
-                <form id="createListForm">
+                <form id="listForm">
                     <div class="form-group">
-                        <label for="newListName">List Name:</label>
-                        <input type="text" id="newListName" placeholder="Enter list name..." maxlength="100">
+                        <label for="listNameInput">List Name:</label>
+                        <input type="text" id="listNameInput" placeholder="Enter list name..." maxlength="100">
                     </div>
                     
                     <div class="form-actions">
+                        <button type="button" id="deleteList" class="delete-btn" style="display: none;">Delete List</button>
                         <div class="action-buttons">
-                            <button type="submit">Create List</button>
-                            <button type="button" id="cancelCreateList">Cancel</button>
+                            <button type="submit" id="saveListBtn">Create List</button>
+                            <button type="button" id="cancelList">Cancel</button>
                         </div>
                     </div>
                 </form>
