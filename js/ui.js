@@ -3,6 +3,22 @@ function setupUI(msalInstance) {
     const fetchBtn = document.getElementById('fetchBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const responseElement = document.getElementById('response');
+    const todoListsElement = document.getElementById('todoLists');
+
+    function renderTodoLists(data) {
+        todoListsElement.innerHTML = '';
+        
+        if (data.value && data.value.length > 0) {
+            data.value.forEach(list => {
+                const listItem = document.createElement('li');
+                listItem.textContent = list.displayName;
+                todoListsElement.appendChild(listItem);
+            });
+            responseElement.textContent = '';
+        } else {
+            todoListsElement.innerHTML = '<li>No todo lists found</li>';
+        }
+    }
 
     function updateUI() {
         const accounts = msalInstance.getAllAccounts();
@@ -36,10 +52,12 @@ function setupUI(msalInstance) {
     fetchBtn.addEventListener('click', async () => {
         try {
             responseElement.textContent = 'Loading...';
+            todoListsElement.innerHTML = '';
             const data = await fetchTodoLists(msalInstance);
-            responseElement.textContent = JSON.stringify(data, null, 2);
+            renderTodoLists(data);
         } catch (error) {
             responseElement.textContent = `Error: ${error.message}`;
+            todoListsElement.innerHTML = '';
         }
     });
 
