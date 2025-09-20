@@ -439,8 +439,11 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     margin-top: 20px;
+    margin-bottom: 20px;
     padding-top: 20px;
+    padding-bottom: 20px;
     border-top: 2px solid #f0f0f0;
+    border-bottom: 2px solid #f0f0f0;
 }
 
 .action-buttons {

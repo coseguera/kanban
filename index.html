@@ -84,6 +84,14 @@
                         <textarea id="editBody" rows="4" placeholder="Task description..."></textarea>
                     </div>
                     
+                    <div class="form-actions">
+                        <button type="button" id="deleteTask" class="delete-btn">Delete Task</button>
+                        <div class="action-buttons">
+                            <button type="submit">Save Changes</button>
+                            <button type="button" id="cancelEdit">Cancel</button>
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
                         <label>Checklist Items:</label>
                         <div class="checklist-input">
@@ -91,14 +99,6 @@
                             <button type="button" id="addChecklistItem">Add</button>
                         </div>
                         <ul id="checklistItems" class="checklist-list"></ul>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="button" id="deleteTask" class="delete-btn">Delete Task</button>
-                        <div class="action-buttons">
-                            <button type="submit">Save Changes</button>
-                            <button type="button" id="cancelEdit">Cancel</button>
-                        </div>
                     </div>
                 </form>
             </div>
