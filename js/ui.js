@@ -61,7 +61,25 @@ function setupUI(msalInstance) {
         if (data.value && data.value.length > 0) {
             data.value.forEach(item => {
                 const listItem = document.createElement('li');
-                listItem.textContent = item.title;
+                
+                // Create content with importance star
+                const itemText = document.createElement('span');
+                itemText.textContent = item.title;
+                
+                const importanceStar = document.createElement('span');
+                importanceStar.className = 'importance-star';
+                
+                if (item.importance === 'high') {
+                    importanceStar.textContent = '★'; // Bold/filled star
+                    importanceStar.classList.add('high');
+                } else {
+                    importanceStar.textContent = '☆'; // Empty star
+                    importanceStar.classList.add('normal');
+                }
+                
+                listItem.appendChild(itemText);
+                listItem.appendChild(importanceStar);
+                
                 listItem.draggable = true;
                 listItem.dataset.taskId = item.id;
                 listItem.dataset.currentStatus = item.status;

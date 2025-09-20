@@ -237,6 +237,9 @@ button:disabled {
     font-family: 'Courier New', monospace;
     font-size: 12px;
     line-height: 1.4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .kanban-column li:hover {
@@ -291,4 +294,24 @@ button:disabled {
         flex-direction: column;
         align-items: center;
     }
+}
+
+/* Importance star styles */
+.importance-star {
+    font-size: 40px;
+    flex-shrink: 0;
+    color: #666666;
+    line-height: 1;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.importance-star.high {
+    color: #333333;
+}
+
+.importance-star.normal {
+    color: #999999;
 }
