@@ -134,3 +134,97 @@ async function deleteTodoItem(msalInstance, listId, taskId) {
     // DELETE returns 204 No Content on success
     return true;
 }
+
+async function fetchChecklistItems(msalInstance, listId, taskId) {
+    const accounts = msalInstance.getAllAccounts();
+    const tokenRequest = {
+        scopes: ['Tasks.Read'],
+        account: accounts[0]
+    };
+
+    const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+    
+    const response = await fetch(`https://graph.microsoft.com/v1.0/me/todo/lists/${listId}/tasks/${taskId}/checklistItems`, {
+        headers: {
+            'Authorization': `Bearer ${tokenResponse.accessToken}`
+        }
+    });
+    
+    const data = await response.json();
+    return data;
+}
+
+async function createChecklistItem(msalInstance, listId, taskId, displayName) {
+    const accounts = msalInstance.getAllAccounts();
+    const tokenRequest = {
+        scopes: ['Tasks.ReadWrite'],
+        account: accounts[0]
+    };
+
+    const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+    
+    const response = await fetch(`https://graph.microsoft.com/v1.0/me/todo/lists/${listId}/tasks/${taskId}/checklistItems`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${tokenResponse.accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            displayName: displayName
+        })
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    return await response.json();
+}
+
+async function updateChecklistItem(msalInstance, listId, taskId, checklistItemId, updates) {
+    const accounts = msalInstance.getAllAccounts();
+    const tokenRequest = {
+        scopes: ['Tasks.ReadWrite'],
+        account: accounts[0]
+    };
+
+    const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+    
+    const response = await fetch(`https://graph.microsoft.com/v1.0/me/todo/lists/${listId}/tasks/${taskId}/checklistItems/${checklistItemId}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${tokenResponse.accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updates)
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    return await response.json();
+}
+
+async function deleteChecklistItem(msalInstance, listId, taskId, checklistItemId) {
+    const accounts = msalInstance.getAllAccounts();
+    const tokenRequest = {
+        scopes: ['Tasks.ReadWrite'],
+        account: accounts[0]
+    };
+
+    const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+    
+    const response = await fetch(`https://graph.microsoft.com/v1.0/me/todo/lists/${listId}/tasks/${taskId}/checklistItems/${checklistItemId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${tokenResponse.accessToken}`
+        }
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    return true;
+}

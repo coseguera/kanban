@@ -259,6 +259,9 @@ function setupUI(msalInstance) {
         // Store item data for submission
         form.dataset.taskId = item.id;
         
+        // Load checklist items
+        loadChecklistItems(item.id);
+        
         // Show modal
         modal.style.display = 'flex';
         
@@ -278,6 +281,9 @@ function setupUI(msalInstance) {
             
             // Toggle button events
             setupToggleButtons();
+            
+            // Checklist events
+            setupChecklistEvents();
             
             // Form submission
             form.addEventListener('submit', handleEditSubmit);
@@ -300,6 +306,93 @@ function setupUI(msalInstance) {
                 e.target.classList.add('active');
             });
         });
+    }
+
+    function setupChecklistEvents() {
+        // Add checklist item
+        document.getElementById('addChecklistItem').addEventListener('click', handleAddChecklistItem);
+        
+        // Allow Enter key to add item
+        document.getElementById('newChecklistItem').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleAddChecklistItem();
+            }
+        });
+    }
+
+    async function loadChecklistItems(taskId) {
+        try {
+            const data = await fetchChecklistItems(msalInstance, currentListId, taskId);
+            renderChecklistItems(data.value || []);
+        } catch (error) {
+            console.error('Error loading checklist items:', error);
+            renderChecklistItems([]);
+        }
+    }
+
+    function renderChecklistItems(items) {
+        const checklistContainer = document.getElementById('checklistItems');
+        checklistContainer.innerHTML = '';
+        
+        items.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'checklist-item';
+            li.dataset.itemId = item.id;
+            
+            li.innerHTML = `
+                <input type="checkbox" ${item.isChecked ? 'checked' : ''}>
+                <span class="item-text ${item.isChecked ? 'completed' : ''}">${item.displayName}</span>
+                <span class="delete-item">×</span>
+            `;
+            
+            // Checkbox event
+            li.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
+                handleChecklistItemToggle(item.id, e.target.checked);
+            });
+            
+            // Delete event
+            li.querySelector('.delete-item').addEventListener('click', () => {
+                handleDeleteChecklistItem(item.id);
+            });
+            
+            checklistContainer.appendChild(li);
+        });
+    }
+
+    async function handleAddChecklistItem() {
+        const input = document.getElementById('newChecklistItem');
+        const displayName = input.value.trim();
+        
+        if (!displayName) return;
+        
+        try {
+            const taskId = document.getElementById('editTaskForm').dataset.taskId;
+            await createChecklistItem(msalInstance, currentListId, taskId, displayName);
+            input.value = '';
+            loadChecklistItems(taskId);
+        } catch (error) {
+            responseElement.textContent = `Error adding checklist item: ${error.message}`;
+        }
+    }
+
+    async function handleChecklistItemToggle(checklistItemId, isChecked) {
+        try {
+            const taskId = document.getElementById('editTaskForm').dataset.taskId;
+            await updateChecklistItem(msalInstance, currentListId, taskId, checklistItemId, { isChecked });
+            loadChecklistItems(taskId);
+        } catch (error) {
+            responseElement.textContent = `Error updating checklist item: ${error.message}`;
+        }
+    }
+
+    async function handleDeleteChecklistItem(checklistItemId) {
+        try {
+            const taskId = document.getElementById('editTaskForm').dataset.taskId;
+            await deleteChecklistItem(msalInstance, currentListId, taskId, checklistItemId);
+            loadChecklistItems(taskId);
+        } catch (error) {
+            responseElement.textContent = `Error deleting checklist item: ${error.message}`;
+        }
     }
 
     function hideEditPopup() {
