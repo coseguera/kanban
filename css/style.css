@@ -215,6 +215,7 @@ button:disabled {
     font-weight: normal;
     font-family: 'Courier New', monospace;
     color: #2c2c2c;
+    filter: grayscale(100%) contrast(200%) brightness(0.7);
 }
 
 .kanban-column ul {
