@@ -49,7 +49,7 @@ function setupUI(msalInstance) {
             });
             responseElement.textContent = '';
         } else {
-            todoListsElement.innerHTML = '<li>No todo lists found</li>';
+            todoListsElement.innerHTML = '<li class="empty-state">No todo lists found. Create one in Microsoft To Do to get started!</li>';
         }
     }
 
