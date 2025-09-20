@@ -1,11 +1,23 @@
 function setupUI(msalInstance) {
     const loginBtn = document.getElementById('loginBtn');
-    const fetchBtn = document.getElementById('fetchBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const backBtn = document.getElementById('backBtn');
     const responseElement = document.getElementById('response');
     const todoListsElement = document.getElementById('todoLists');
     const todoItemsElement = document.getElementById('todoItems');
+
+    async function loadTodoLists() {
+        try {
+            responseElement.textContent = 'Loading...';
+            todoListsElement.innerHTML = '';
+            const data = await fetchTodoLists(msalInstance);
+            renderTodoLists(data);
+            showTodoLists();
+        } catch (error) {
+            responseElement.textContent = `Error: ${error.message}`;
+            todoListsElement.innerHTML = '';
+        }
+    }
 
     function showTodoLists() {
         todoListsElement.style.display = 'block';
@@ -68,12 +80,15 @@ function setupUI(msalInstance) {
         const accounts = msalInstance.getAllAccounts();
         if (accounts.length > 0) {
             loginBtn.disabled = true;
-            fetchBtn.disabled = false;
             logoutBtn.disabled = false;
+            loadTodoLists();
         } else {
             loginBtn.disabled = false;
-            fetchBtn.disabled = true;
             logoutBtn.disabled = true;
+            todoListsElement.innerHTML = '';
+            todoItemsElement.innerHTML = '';
+            responseElement.textContent = '';
+            showTodoLists();
         }
     }
 
@@ -97,19 +112,6 @@ function setupUI(msalInstance) {
         document.querySelector('h1').textContent = 'Todo Lists';
         showTodoLists();
         responseElement.textContent = '';
-    });
-
-    fetchBtn.addEventListener('click', async () => {
-        try {
-            responseElement.textContent = 'Loading...';
-            todoListsElement.innerHTML = '';
-            const data = await fetchTodoLists(msalInstance);
-            renderTodoLists(data);
-            showTodoLists();
-        } catch (error) {
-            responseElement.textContent = `Error: ${error.message}`;
-            todoListsElement.innerHTML = '';
-        }
     });
 
     return { updateUI };
