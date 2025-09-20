@@ -6,6 +6,7 @@
     <title>Microsoft Graph API Response</title>
     <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.3/lib/msal-browser.min.js"></script>
     <script src="js/config.js"></script>
+    <script src="js/graph.js"></script>
 </head>
 <body>
     <h1>Microsoft Graph API Response</h1>
@@ -66,24 +67,8 @@
         fetchBtn.addEventListener('click', async () => {
             try {
                 responseElement.textContent = 'Loading...';
-                
-                const accounts = msalInstance.getAllAccounts();
-                const tokenRequest = {
-                    scopes: ['User.Read'],
-                    account: accounts[0]
-                };
-
-                const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
-                
-                const response = await fetch('https://graph.microsoft.com/v1.0/me', {
-                    headers: {
-                        'Authorization': `Bearer ${tokenResponse.accessToken}`
-                    }
-                });
-                
-                const data = await response.json();
+                const data = await fetchUserData(msalInstance);
                 responseElement.textContent = JSON.stringify(data, null, 2);
-                
             } catch (error) {
                 responseElement.textContent = `Error: ${error.message}`;
             }
