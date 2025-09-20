@@ -5,6 +5,9 @@ function setupUI(msalInstance) {
     const responseElement = document.getElementById('response');
     const todoListsElement = document.getElementById('todoLists');
     const todoItemsElement = document.getElementById('todoItems');
+    const notStartedItems = document.getElementById('notStartedItems');
+    const inProgressItems = document.getElementById('inProgressItems');
+    const completedItems = document.getElementById('completedItems');
 
     async function loadTodoLists() {
         try {
@@ -49,16 +52,44 @@ function setupUI(msalInstance) {
     }
 
     function renderTodoItems(data, listName) {
-        todoItemsElement.innerHTML = '';
+        notStartedItems.innerHTML = '';
+        inProgressItems.innerHTML = '';
+        completedItems.innerHTML = '';
         
         if (data.value && data.value.length > 0) {
             data.value.forEach(item => {
                 const listItem = document.createElement('li');
                 listItem.textContent = item.title;
-                todoItemsElement.appendChild(listItem);
+                
+                switch(item.status) {
+                    case 'notStarted':
+                        notStartedItems.appendChild(listItem);
+                        break;
+                    case 'inProgress':
+                        inProgressItems.appendChild(listItem);
+                        break;
+                    case 'completed':
+                        completedItems.appendChild(listItem);
+                        break;
+                    default:
+                        // Handle other statuses like 'waitingOnOthers', 'deferred'
+                        notStartedItems.appendChild(listItem);
+                        break;
+                }
             });
         } else {
-            todoItemsElement.innerHTML = '<li>No items in this list</li>';
+            notStartedItems.innerHTML = '<li>No items in this list</li>';
+        }
+        
+        // Show empty message if no items in a category
+        if (notStartedItems.children.length === 0) {
+            notStartedItems.innerHTML = '<li>No items</li>';
+        }
+        if (inProgressItems.children.length === 0) {
+            inProgressItems.innerHTML = '<li>No items</li>';
+        }
+        if (completedItems.children.length === 0) {
+            completedItems.innerHTML = '<li>No items</li>';
         }
         
         document.querySelector('h1').textContent = `Items in: ${listName}`;
@@ -87,7 +118,9 @@ function setupUI(msalInstance) {
             loginBtn.disabled = false;
             logoutBtn.disabled = true;
             todoListsElement.innerHTML = '';
-            todoItemsElement.innerHTML = '';
+            notStartedItems.innerHTML = '';
+            inProgressItems.innerHTML = '';
+            completedItems.innerHTML = '';
             responseElement.textContent = '';
             showTodoLists();
         }
