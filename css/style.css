@@ -165,7 +165,7 @@ button:disabled {
     cursor: pointer;
     transition: background-color 0.2s ease;
     font-size: 14px;
-    font-weight: normal;
+    font-weight: bold;
     font-family: 'Courier New', monospace;
     text-align: left;
     min-height: 60px;
@@ -230,7 +230,7 @@ button:disabled {
     border-radius: 0;
     transition: background-color 0.2s ease;
     border-left: 3px solid #666666;
-    font-weight: normal;
+    font-weight: bold;
     cursor: move;
     color: #1a1a1a;
     font-family: 'Courier New', monospace;
