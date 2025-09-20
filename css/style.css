@@ -318,3 +318,187 @@ button:disabled {
 .importance-star.normal {
     color: #999999;
 }
+
+/* Edit icon styles */
+.edit-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    color: #666666;
+    line-height: 1;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    margin-right: 8px;
+    transform: translateY(1px);
+}
+
+.edit-icon:hover {
+    color: #333333;
+}
+
+/* Modal styles */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #ffffff;
+    border: 2px solid #666666;
+    border-radius: 0;
+    width: 90%;
+    max-width: 500px;
+    font-family: 'Courier New', monospace;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 2px solid #666666;
+    background: #f8f8f8;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.close-btn {
+    font-size: 24px;
+    cursor: pointer;
+    color: #666666;
+    user-select: none;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: #333333;
+}
+
+#editTaskForm {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #333333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #666666;
+    border-radius: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #333333;
+}
+
+.form-group input[readonly] {
+    background: #f8f8f8;
+    color: #666666;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.form-actions button {
+    padding: 8px 16px;
+    border: 2px solid #666666;
+    border-radius: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    background: #ffffff;
+    color: #333333;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-actions button[type="submit"] {
+    background: #333333;
+    color: #ffffff;
+}
+
+.form-actions button:hover {
+    background: #f0f0f0;
+}
+
+.form-actions button[type="submit"]:hover {
+    background: #555555;
+}
+
+/* Toggle button styles */
+.toggle-group {
+    display: flex;
+    gap: 4px;
+}
+
+.toggle-btn {
+    padding: 6px 12px;
+    border: 2px solid #666666;
+    border-radius: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    background: #ffffff;
+    color: #333333;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    flex: 1;
+    transition: none;
+}
+
+.toggle-btn:hover {
+    background: #f0f0f0;
+}
+
+.toggle-btn.active {
+    background: #333333;
+    color: #ffffff;
+}
+
+.toggle-btn.active:hover {
+    background: #555555;
+}

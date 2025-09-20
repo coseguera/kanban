@@ -66,6 +66,20 @@ function setupUI(msalInstance) {
                 const itemText = document.createElement('span');
                 itemText.textContent = item.title;
                 
+                // Create icons container
+                const iconsContainer = document.createElement('div');
+                iconsContainer.style.display = 'flex';
+                iconsContainer.style.alignItems = 'center';
+                
+                // Create edit icon
+                const editIcon = document.createElement('span');
+                editIcon.className = 'edit-icon';
+                editIcon.textContent = '✎'; // Edit pencil icon
+                editIcon.addEventListener('click', async (e) => {
+                    e.stopPropagation(); // Prevent drag events
+                    showEditPopup(item);
+                });
+                
                 const importanceStar = document.createElement('span');
                 importanceStar.className = 'importance-star';
                 
@@ -83,8 +97,11 @@ function setupUI(msalInstance) {
                     await toggleImportance(item.id, item.importance);
                 });
                 
+                iconsContainer.appendChild(editIcon);
+                iconsContainer.appendChild(importanceStar);
+                
                 listItem.appendChild(itemText);
-                listItem.appendChild(importanceStar);
+                listItem.appendChild(iconsContainer);
                 
                 listItem.draggable = true;
                 listItem.dataset.taskId = item.id;
@@ -209,6 +226,116 @@ function setupUI(msalInstance) {
             renderTodoItems(data, listName);
         } catch (error) {
             responseElement.textContent = `Error updating importance: ${error.message}`;
+        }
+    }
+
+    function showEditPopup(item) {
+        const modal = document.getElementById('editModal');
+        const form = document.getElementById('editTaskForm');
+        
+        // Populate form with current values
+        document.getElementById('editTitle').value = item.title;
+        
+        // Set status toggle
+        const statusButtons = document.querySelectorAll('#editStatus .toggle-btn');
+        statusButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.value === item.status) {
+                btn.classList.add('active');
+            }
+        });
+        
+        // Set importance toggle
+        const importanceButtons = document.querySelectorAll('#editImportance .toggle-btn');
+        importanceButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.value === (item.importance || 'normal')) {
+                btn.classList.add('active');
+            }
+        });
+        
+        document.getElementById('editBody').value = item.body?.content || '';
+        
+        // Store item data for submission
+        form.dataset.taskId = item.id;
+        
+        // Show modal
+        modal.style.display = 'flex';
+        
+        // Setup event listeners (only once)
+        if (!form.hasEventListener) {
+            form.hasEventListener = true;
+            
+            // Close modal events
+            document.getElementById('cancelEdit').addEventListener('click', hideEditPopup);
+            document.querySelector('.close-btn').addEventListener('click', hideEditPopup);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) hideEditPopup();
+            });
+            
+            // Toggle button events
+            setupToggleButtons();
+            
+            // Form submission
+            form.addEventListener('submit', handleEditSubmit);
+        }
+    }
+
+    function setupToggleButtons() {
+        // Status toggle buttons
+        document.querySelectorAll('#editStatus .toggle-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('#editStatus .toggle-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+            });
+        });
+        
+        // Importance toggle buttons
+        document.querySelectorAll('#editImportance .toggle-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('#editImportance .toggle-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+            });
+        });
+    }
+
+    function hideEditPopup() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    async function handleEditSubmit(e) {
+        e.preventDefault();
+        
+        const form = e.target;
+        const taskId = form.dataset.taskId;
+        
+        // Get selected values from toggle buttons
+        const selectedStatus = document.querySelector('#editStatus .toggle-btn.active')?.dataset.value;
+        const selectedImportance = document.querySelector('#editImportance .toggle-btn.active')?.dataset.value;
+        
+        const updates = {
+            status: selectedStatus,
+            importance: selectedImportance
+        };
+        
+        const bodyContent = document.getElementById('editBody').value.trim();
+        if (bodyContent) {
+            updates.body = bodyContent;
+        }
+        
+        try {
+            responseElement.textContent = 'Updating task...';
+            await updateTodoItem(msalInstance, currentListId, taskId, updates);
+            
+            // Refresh the items to show the updated task
+            const data = await fetchTodoItems(msalInstance, currentListId);
+            const listName = document.querySelector('h1').textContent.replace('Items in: ', '');
+            renderTodoItems(data, listName);
+            
+            responseElement.textContent = '';
+            hideEditPopup();
+        } catch (error) {
+            responseElement.textContent = `Error updating task: ${error.message}`;
         }
     }
 

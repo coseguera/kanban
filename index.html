@@ -48,6 +48,49 @@
         </div>
         
         <pre id="response"></pre>
+        
+        <!-- Edit Task Modal -->
+        <div id="editModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Edit Task</h2>
+                    <span class="close-btn">&times;</span>
+                </div>
+                <form id="editTaskForm">
+                    <div class="form-group">
+                        <label for="editTitle">Title:</label>
+                        <input type="text" id="editTitle" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editStatus">Status:</label>
+                        <div class="toggle-group" id="editStatus">
+                            <button type="button" class="toggle-btn" data-value="notStarted">Not Started</button>
+                            <button type="button" class="toggle-btn" data-value="inProgress">In Progress</button>
+                            <button type="button" class="toggle-btn" data-value="completed">Completed</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editImportance">Importance:</label>
+                        <div class="toggle-group" id="editImportance">
+                            <button type="button" class="toggle-btn" data-value="normal">Normal</button>
+                            <button type="button" class="toggle-btn" data-value="high">High</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editBody">Description:</label>
+                        <textarea id="editBody" rows="4" placeholder="Task description..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit">Save Changes</button>
+                        <button type="button" id="cancelEdit">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </body>
 </html>
