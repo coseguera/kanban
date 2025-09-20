@@ -79,10 +79,11 @@ function setupUI(msalInstance) {
     function updateUI() {
         const accounts = msalInstance.getAllAccounts();
         if (accounts.length > 0) {
-            loginBtn.disabled = true;
+            loginBtn.style.display = 'none';
             logoutBtn.disabled = false;
             loadTodoLists();
         } else {
+            loginBtn.style.display = 'inline-block';
             loginBtn.disabled = false;
             logoutBtn.disabled = true;
             todoListsElement.innerHTML = '';
