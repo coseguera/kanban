@@ -74,7 +74,7 @@ function setupUI(msalInstance) {
                 // Create edit icon
                 const editIcon = document.createElement('span');
                 editIcon.className = 'edit-icon';
-                editIcon.textContent = '✎'; // Edit pencil icon
+                editIcon.textContent = '⋯';
                 editIcon.addEventListener('click', async (e) => {
                     e.stopPropagation(); // Prevent drag events
                     showEditPopup(item);
