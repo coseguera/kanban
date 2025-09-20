@@ -60,6 +60,13 @@ function setupUI(msalInstance) {
             data.value.forEach(item => {
                 const listItem = document.createElement('li');
                 listItem.textContent = item.title;
+                listItem.draggable = true;
+                listItem.dataset.taskId = item.id;
+                listItem.dataset.currentStatus = item.status;
+                
+                // Add drag event listeners
+                listItem.addEventListener('dragstart', handleDragStart);
+                listItem.addEventListener('dragend', handleDragEnd);
                 
                 switch(item.status) {
                     case 'notStarted':
@@ -96,15 +103,82 @@ function setupUI(msalInstance) {
         showTodoItems();
     }
 
-    async function loadTodoItems(listId, listName) {
+    let draggedElement = null;
+    let currentListId = null;
+
+    function handleDragStart(e) {
+        draggedElement = e.target;
+        e.target.style.opacity = '0.5';
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', e.target.outerHTML);
+    }
+
+    function handleDragEnd(e) {
+        e.target.style.opacity = '1';
+        draggedElement = null;
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragEnter(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+        e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        
+        if (draggedElement) {
+            const targetColumn = e.currentTarget;
+            const taskId = draggedElement.dataset.taskId;
+            const currentStatus = draggedElement.dataset.currentStatus;
+            
+            let newStatus;
+            if (targetColumn === notStartedItems) {
+                newStatus = 'notStarted';
+            } else if (targetColumn === inProgressItems) {
+                newStatus = 'inProgress';
+            } else if (targetColumn === completedItems) {
+                newStatus = 'completed';
+            }
+            
+            if (newStatus && newStatus !== currentStatus) {
+                updateTaskStatus(taskId, newStatus);
+            }
+        }
+    }
+
+    async function updateTaskStatus(taskId, newStatus) {
         try {
-            responseElement.textContent = 'Loading items...';
-            const data = await fetchTodoItems(msalInstance, listId);
+            responseElement.textContent = 'Updating task...';
+            await updateTodoItem(msalInstance, currentListId, taskId, newStatus);
+            
+            // Refresh the items to show the updated status
+            const data = await fetchTodoItems(msalInstance, currentListId);
+            const listName = document.querySelector('h1').textContent.replace('Items in: ', '');
             renderTodoItems(data, listName);
             responseElement.textContent = '';
         } catch (error) {
-            responseElement.textContent = `Error: ${error.message}`;
+            responseElement.textContent = `Error updating task: ${error.message}`;
         }
+    }
+
+    function setupDropZones() {
+        [notStartedItems, inProgressItems, completedItems].forEach(zone => {
+            zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('dragenter', handleDragEnter);
+            zone.addEventListener('dragleave', handleDragLeave);
+            zone.addEventListener('drop', handleDrop);
+        });
     }
 
     function updateUI() {
@@ -147,6 +221,21 @@ function setupUI(msalInstance) {
         showTodoLists();
         responseElement.textContent = '';
     });
+
+    async function loadTodoItems(listId, listName) {
+        try {
+            currentListId = listId;
+            responseElement.textContent = 'Loading items...';
+            const data = await fetchTodoItems(msalInstance, listId);
+            renderTodoItems(data, listName);
+            responseElement.textContent = '';
+        } catch (error) {
+            responseElement.textContent = `Error: ${error.message}`;
+        }
+    }
+
+    // Setup drop zones
+    setupDropZones();
 
     return { updateUI };
 }

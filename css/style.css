@@ -145,6 +145,7 @@ button:disabled {
     border-left: 4px solid transparent;
     font-weight: 500;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: move;
 }
 
 .kanban-column:nth-child(1) li {
@@ -162,6 +163,20 @@ button:disabled {
 .kanban-column li:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.kanban-column li[draggable="true"]:hover {
+    cursor: grab;
+}
+
+.kanban-column li[draggable="true"]:active {
+    cursor: grabbing;
+}
+
+.kanban-column ul.drag-over {
+    background: rgba(122, 162, 247, 0.1);
+    border: 2px dashed #7aa2f7;
+    border-radius: 8px;
 }
 
 #response {
