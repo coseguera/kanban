@@ -6,10 +6,26 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1a1b26, #24283b);
-    color: #c0caf5;
+    background: linear-gradient(135deg, #0a0a0a, #1a0a1a, #0f001f);
+    color: #00ffff;
     min-height: 100vh;
     padding: 20px;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 0, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
 }
 
 .container {
@@ -21,8 +37,14 @@ h1 {
     text-align: center;
     font-size: 2.5rem;
     margin-bottom: 30px;
-    color: #7aa2f7;
-    text-shadow: 0 2px 10px rgba(122, 162, 247, 0.3);
+    color: #ff0080;
+    text-shadow: 
+        0 0 10px #ff0080,
+        0 0 20px #ff0080,
+        0 0 30px #ff0080;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 900;
 }
 
 .controls {
@@ -34,7 +56,7 @@ h1 {
 }
 
 button {
-    background: linear-gradient(135deg, #7aa2f7, #bb9af7);
+    background: linear-gradient(135deg, #ff0080, #8000ff);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -43,31 +65,50 @@ button {
     font-size: 14px;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(122, 162, 247, 0.3);
+    box-shadow: 
+        0 4px 15px rgba(255, 0, 128, 0.3),
+        0 0 20px rgba(255, 0, 128, 0.2);
+    border: 1px solid #ff0080;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 button:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(122, 162, 247, 0.4);
+    box-shadow: 
+        0 6px 20px rgba(255, 0, 128, 0.5),
+        0 0 30px rgba(255, 0, 128, 0.4);
+    background: linear-gradient(135deg, #ff0080, #ff00ff);
 }
 
 button:disabled {
-    background: #414868;
+    background: #333;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+    border-color: #555;
 }
 
 .back-btn {
-    background: linear-gradient(135deg, #f7768e, #ff9e64);
+    background: linear-gradient(135deg, #00ffff, #0080ff);
+    border-color: #00ffff;
+    box-shadow: 
+        0 4px 15px rgba(0, 255, 255, 0.3),
+        0 0 20px rgba(0, 255, 255, 0.2);
 }
 
 .back-btn:hover {
-    box-shadow: 0 6px 20px rgba(247, 118, 142, 0.4);
+    box-shadow: 
+        0 6px 20px rgba(0, 255, 255, 0.5),
+        0 0 30px rgba(0, 255, 255, 0.4);
 }
 
 .logout-btn {
-    background: linear-gradient(135deg, #414868, #565f89);
+    background: linear-gradient(135deg, #ff4000, #ff8000);
+    border-color: #ff4000;
+    box-shadow: 
+        0 4px 15px rgba(255, 64, 0, 0.3),
+        0 0 20px rgba(255, 64, 0, 0.2);
 }
 
 .task-form {
@@ -76,34 +117,38 @@ button:disabled {
     gap: 10px;
     margin-bottom: 20px;
     padding: 15px;
-    background: rgba(122, 162, 247, 0.1);
+    background: rgba(255, 0, 128, 0.1);
     border-radius: 8px;
-    border: 1px solid rgba(122, 162, 247, 0.2);
+    border: 1px solid rgba(255, 0, 128, 0.3);
+    box-shadow: 0 0 15px rgba(255, 0, 128, 0.1);
 }
 
 .task-form input {
-    background: #1a1b26;
-    border: 2px solid #414868;
+    background: #0d0012;
+    border: 2px solid #ff0080;
     border-radius: 6px;
     padding: 10px 12px;
-    color: #c0caf5;
+    color: #00ffff;
     font-size: 14px;
     width: 100%;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 5px rgba(255, 0, 128, 0.1);
 }
 
 .task-form input:focus {
     outline: none;
-    border-color: #7aa2f7;
-    box-shadow: 0 0 0 2px rgba(122, 162, 247, 0.1);
+    border-color: #00ffff;
+    box-shadow: 
+        0 0 0 2px rgba(0, 255, 255, 0.2),
+        0 0 15px rgba(0, 255, 255, 0.3);
 }
 
 .task-form input::placeholder {
-    color: #565f89;
+    color: rgba(255, 0, 128, 0.6);
 }
 
 .task-form button {
-    background: linear-gradient(135deg, #9ece6a, #73daca);
+    background: linear-gradient(135deg, #ff0080, #00ffff);
     padding: 10px 16px;
     margin: 0;
     width: 100%;
@@ -111,7 +156,9 @@ button:disabled {
 }
 
 .task-form button:hover:not(:disabled) {
-    box-shadow: 0 4px 15px rgba(158, 206, 106, 0.3);
+    box-shadow: 
+        0 4px 15px rgba(255, 0, 128, 0.4),
+        0 0 20px rgba(0, 255, 255, 0.3);
 }
 
 #todoLists {
@@ -127,15 +174,17 @@ button:disabled {
 }
 
 #todoLists li {
-    background: linear-gradient(135deg, #414868, #565f89);
+    background: linear-gradient(135deg, #1a0033, #330066);
     padding: 18px 25px;
     border-radius: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 2px solid transparent;
+    border: 2px solid #ff0080;
     font-size: 18px;
     font-weight: 600;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.7),
+        0 0 20px rgba(255, 0, 128, 0.2);
     text-align: center;
     min-height: 80px;
     display: flex;
@@ -143,6 +192,9 @@ button:disabled {
     justify-content: center;
     position: relative;
     overflow: hidden;
+    color: #00ffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 #todoLists li::before {
@@ -152,13 +204,22 @@ button:disabled {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #7aa2f7, #bb9af7, #f7768e);
+    background: linear-gradient(90deg, #ff0080, #00ffff, #ff00ff, #00ff80);
+    animation: neonPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes neonPulse {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; }
 }
 
 #todoLists li:hover {
     transform: translateY(-8px);
-    border-color: #7aa2f7;
-    box-shadow: 0 12px 35px rgba(122, 162, 247, 0.4);
+    border-color: #00ffff;
+    box-shadow: 
+        0 12px 35px rgba(0, 255, 255, 0.4),
+        0 0 40px rgba(0, 255, 255, 0.3);
+    color: #ff00ff;
 }
 
 #todoLists li:active {
@@ -166,11 +227,11 @@ button:disabled {
 }
 
 #todoLists li.empty-state {
-    background: linear-gradient(135deg, #24283b, #414868);
+    background: linear-gradient(135deg, #0a0a0a, #1a0033);
     cursor: default;
     font-style: italic;
-    color: #7aa2f7;
-    border: 2px dashed #414868;
+    color: #00ffff;
+    border: 2px dashed #ff0080;
     min-height: 70px;
 }
 
@@ -180,8 +241,10 @@ button:disabled {
 
 #todoLists li.empty-state:hover {
     transform: none;
-    border-color: #414868;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    border-color: #ff0080;
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.7),
+        0 0 20px rgba(255, 0, 128, 0.2);
 }
 
 .kanban-board {
@@ -192,31 +255,55 @@ button:disabled {
 }
 
 .kanban-column {
-    background: #24283b;
+    background: linear-gradient(135deg, #0f001f, #1a0033);
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    border: 1px solid #414868;
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.7),
+        0 0 30px rgba(255, 0, 128, 0.1);
+    border: 1px solid #ff0080;
+    position: relative;
+}
+
+.kanban-column::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(45deg, #ff0080, #00ffff, #ff00ff);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    z-index: -1;
 }
 
 .kanban-column h2 {
     text-align: center;
     margin-bottom: 20px;
     padding-bottom: 15px;
-    border-bottom: 2px solid #414868;
+    border-bottom: 2px solid #ff0080;
     font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 800;
 }
 
 .kanban-column:nth-child(1) h2 {
-    color: #ff9e64;
+    color: #ff0080;
+    text-shadow: 0 0 10px #ff0080;
 }
 
 .kanban-column:nth-child(2) h2 {
-    color: #7aa2f7;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
 }
 
 .kanban-column:nth-child(3) h2 {
-    color: #9ece6a;
+    color: #00ff80;
+    text-shadow: 0 0 10px #00ff80;
 }
 
 .kanban-column ul {
@@ -225,32 +312,38 @@ button:disabled {
 }
 
 .kanban-column li {
-    background: linear-gradient(135deg, #414868, #565f89);
+    background: linear-gradient(135deg, #1a0033, #330066);
     margin-bottom: 12px;
     padding: 15px;
     border-radius: 8px;
     transition: all 0.3s ease;
     border-left: 4px solid transparent;
     font-weight: 500;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(255, 0, 128, 0.1);
     cursor: move;
+    color: #00ffff;
+    border: 1px solid rgba(255, 0, 128, 0.3);
 }
 
 .kanban-column:nth-child(1) li {
-    border-left-color: #ff9e64;
+    border-left-color: #ff0080;
 }
 
 .kanban-column:nth-child(2) li {
-    border-left-color: #7aa2f7;
+    border-left-color: #00ffff;
 }
 
 .kanban-column:nth-child(3) li {
-    border-left-color: #9ece6a;
+    border-left-color: #00ff80;
 }
 
 .kanban-column li:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.7),
+        0 0 25px rgba(255, 0, 128, 0.3);
 }
 
 .kanban-column li[draggable="true"]:hover {
@@ -262,29 +355,34 @@ button:disabled {
 }
 
 .kanban-column ul.drag-over {
-    background: rgba(122, 162, 247, 0.1);
-    border: 2px dashed #7aa2f7;
+    background: rgba(0, 255, 255, 0.1);
+    border: 2px dashed #00ffff;
     border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
 }
 
 #response {
-    background: #1a1b26;
-    border: 1px solid #414868;
+    background: linear-gradient(135deg, #0d0012, #1a0033);
+    border: 1px solid #ff0080;
     padding: 15px;
     border-radius: 8px;
     margin-top: 20px;
-    color: #c0caf5;
+    color: #00ffff;
     font-family: 'Courier New', monospace;
     font-size: 13px;
     line-height: 1.4;
     white-space: pre-wrap;
+    box-shadow: 
+        0 0 15px rgba(255, 0, 128, 0.2),
+        inset 0 0 10px rgba(0, 255, 255, 0.1);
 }
 
 .empty-state {
     text-align: center;
-    color: #565f89;
+    color: rgba(255, 0, 128, 0.6);
     font-style: italic;
     padding: 20px;
+    text-shadow: 0 0 5px rgba(255, 0, 128, 0.3);
 }
 
 @media (max-width: 768px) {
