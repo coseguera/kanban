@@ -162,7 +162,7 @@ function setupUI(msalInstance) {
     async function updateTaskStatus(taskId, newStatus) {
         try {
             responseElement.textContent = 'Updating task...';
-            await updateTodoItem(msalInstance, currentListId, taskId, newStatus);
+            await updateTodoItem(msalInstance, currentListId, taskId, { status: newStatus });
             
             // Refresh the items to show the updated status
             const data = await fetchTodoItems(msalInstance, currentListId);
