@@ -6,6 +6,7 @@
     <title>Microsoft Graph API Response</title>
     <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.3/lib/msal-browser.min.js"></script>
     <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/graph.js"></script>
     <script src="js/ui.js"></script>
 </head>
@@ -17,22 +18,10 @@
     <pre id="response"></pre>
 
     <script>
-        const msalInstance = new msal.PublicClientApplication(msalConfig);
-
-        // Handle redirect after login
-        msalInstance.handleRedirectPromise().then((response) => {
-            if (response) {
-                ui.updateUI();
-            } else {
-                const accounts = msalInstance.getAllAccounts();
-                if (accounts.length > 0) {
-                    ui.updateUI();
-                }
-            }
+        initializeAuth().then((authResult) => {
+            const ui = setupUI(authResult.msalInstance);
+            ui.updateUI();
         });
-
-        const ui = setupUI(msalInstance);
-        ui.updateUI();
     </script>
 </body>
 </html>
