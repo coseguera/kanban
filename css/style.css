@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+    font-family: Consolas, 'SF Mono', 'Nimbus Mono PS', 'Courier New', Monaco, Menlo, monospace;
     background: #f8f8f8;
     color: #2c2c2c;
     margin: 0;
@@ -49,7 +49,6 @@ h1 {
     letter-spacing: 4px;
     border-bottom: 2px solid #666666;
     padding-bottom: 10px;
-    font-family: 'Courier New', monospace;
 }
 
 .controls {
@@ -70,7 +69,6 @@ button {
     font-size: 12px;
     font-weight: normal;
     transition: all 0.2s ease;
-    font-family: 'Courier New', monospace;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -108,7 +106,6 @@ button:disabled {
     padding: 10px 12px;
     color: #2c2c2c;
     font-size: 12px;
-    font-family: 'Courier New', monospace;
     width: 100%;
     transition: border-color 0.2s ease;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -166,7 +163,6 @@ button:disabled {
     transition: background-color 0.2s ease;
     font-size: 14px;
     font-weight: bold;
-    font-family: 'Courier New', monospace;
     text-align: left;
     min-height: 60px;
     display: flex;
