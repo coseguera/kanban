@@ -17,6 +17,83 @@ async function fetchTodoLists(msalInstance) {
     return data;
 }
 
+async function createTodoList(msalInstance, displayName) {
+    const accounts = msalInstance.getAllAccounts();
+    const tokenRequest = {
+        scopes: ['Tasks.ReadWrite'],
+        account: accounts[0]
+    };
+
+    const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+    
+    const response = await fetch('https://graph.microsoft.com/v1.0/me/todo/lists', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${tokenResponse.accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            displayName: displayName
+        })
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    return await response.json();
+}
+
+async function updateTodoList(msalInstance, listId, displayName) {
+    const accounts = msalInstance.getAllAccounts();
+    const tokenRequest = {
+        scopes: ['Tasks.ReadWrite'],
+        account: accounts[0]
+    };
+
+    const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+    
+    const response = await fetch(`https://graph.microsoft.com/v1.0/me/todo/lists/${listId}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${tokenResponse.accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            displayName: displayName
+        })
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    return await response.json();
+}
+
+async function deleteTodoList(msalInstance, listId) {
+    const accounts = msalInstance.getAllAccounts();
+    const tokenRequest = {
+        scopes: ['Tasks.ReadWrite'],
+        account: accounts[0]
+    };
+
+    const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+    
+    const response = await fetch(`https://graph.microsoft.com/v1.0/me/todo/lists/${listId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${tokenResponse.accessToken}`
+        }
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    return true;
+}
+
 async function fetchTodoItems(msalInstance, listId) {
     const accounts = msalInstance.getAllAccounts();
     const tokenRequest = {
