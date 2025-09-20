@@ -2,6 +2,7 @@ function setupUI(msalInstance) {
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const backBtn = document.getElementById('backBtn');
+    const newListBtn = document.getElementById('newListBtn');
     const addTaskBtn = document.getElementById('addTaskBtn');
     const newTaskTitle = document.getElementById('newTaskTitle');
     const responseElement = document.getElementById('response');
@@ -10,6 +11,9 @@ function setupUI(msalInstance) {
     const notStartedItems = document.getElementById('notStartedItems');
     const inProgressItems = document.getElementById('inProgressItems');
     const completedItems = document.getElementById('completedItems');
+    const createListModal = document.getElementById('createListModal');
+    const newListName = document.getElementById('newListName');
+    const createListForm = document.getElementById('createListForm');
 
     async function loadTodoLists() {
         try {
@@ -501,11 +505,13 @@ function setupUI(msalInstance) {
         const accounts = msalInstance.getAllAccounts();
         if (accounts.length > 0) {
             loginBtn.style.display = 'none';
+            newListBtn.style.display = 'inline-block';
             logoutBtn.disabled = false;
             loadTodoLists();
         } else {
             loginBtn.style.display = 'inline-block';
             loginBtn.disabled = false;
+            newListBtn.style.display = 'none';
             logoutBtn.disabled = true;
             todoListsElement.innerHTML = '';
             notStartedItems.innerHTML = '';
@@ -556,11 +562,96 @@ function setupUI(msalInstance) {
         }
     }
 
+    async function createNewList() {
+        const listName = newListName.value.trim();
+        if (!listName) {
+            responseElement.textContent = 'Please enter a list name';
+            newListName.focus();
+            return;
+        }
+
+        // Validate list name length
+        if (listName.length > 100) {
+            responseElement.textContent = 'List name must be 100 characters or less';
+            newListName.focus();
+            return;
+        }
+
+        try {
+            responseElement.textContent = 'Creating list...';
+            const submitBtn = createListForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            newListName.disabled = true;
+            
+            await createTodoList(msalInstance, listName);
+            
+            // Clear the input and close modal
+            newListName.value = '';
+            hideCreateListModal();
+            
+            // Refresh the lists to show the new list
+            await loadTodoLists();
+            responseElement.textContent = 'List created successfully!';
+            
+            // Clear success message after 2 seconds
+            setTimeout(() => {
+                if (responseElement.textContent === 'List created successfully!') {
+                    responseElement.textContent = '';
+                }
+            }, 2000);
+        } catch (error) {
+            responseElement.textContent = `Error creating list: ${error.message}`;
+        } finally {
+            const submitBtn = createListForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = false;
+            newListName.disabled = false;
+        }
+    }
+
+    function showCreateListModal() {
+        createListModal.style.display = 'flex';
+        newListName.value = '';
+        newListName.focus();
+        responseElement.textContent = '';
+    }
+
+    function hideCreateListModal() {
+        createListModal.style.display = 'none';
+        newListName.value = '';
+        responseElement.textContent = '';
+    }
+
     // Event listeners
     backBtn.addEventListener('click', () => {
-        document.querySelector('h1').textContent = 'Todo Lists';
+        document.querySelector('h1').textContent = 'Kanban Board';
         showTodoLists();
         responseElement.textContent = '';
+    });
+
+    newListBtn.addEventListener('click', showCreateListModal);
+
+    // Create list modal event listeners
+    createListForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        createNewList();
+    });
+
+    document.getElementById('cancelCreateList').addEventListener('click', hideCreateListModal);
+    document.getElementById('closeCreateListModal').addEventListener('click', hideCreateListModal);
+
+    // Close modal when clicking outside
+    createListModal.addEventListener('click', (e) => {
+        if (e.target === createListModal) {
+            hideCreateListModal();
+        }
+    });
+
+    // Enter key support for list name input
+    newListName.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            createNewList();
+        }
     });
 
     addTaskBtn.addEventListener('click', createNewTask);
@@ -568,6 +659,14 @@ function setupUI(msalInstance) {
     newTaskTitle.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             createNewTask();
+        }
+    });
+
+    createListBtn.addEventListener('click', createNewList);
+    
+    newListName.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            createNewList();
         }
     });
 

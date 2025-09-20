@@ -18,6 +18,7 @@
         
         <div class="controls">
             <button id="loginBtn">Login</button>
+            <button id="newListBtn" class="new-list-btn" style="display:none;">+ New List</button>
             <button id="logoutBtn" class="logout-btn" disabled>Logout</button>
             <button id="backBtn" class="back-btn" style="display:none;">← Back to Lists</button>
         </div>
@@ -99,6 +100,29 @@
                             <button type="button" id="addChecklistItem">Add</button>
                         </div>
                         <ul id="checklistItems" class="checklist-list"></ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Create List Modal -->
+        <div id="createListModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📝 Create New List</h2>
+                    <span class="close-btn" id="closeCreateListModal">&times;</span>
+                </div>
+                <form id="createListForm">
+                    <div class="form-group">
+                        <label for="newListName">List Name:</label>
+                        <input type="text" id="newListName" placeholder="Enter list name..." maxlength="100">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <div class="action-buttons">
+                            <button type="submit">Create List</button>
+                            <button type="button" id="cancelCreateList">Cancel</button>
+                        </div>
                     </div>
                 </form>
             </div>
