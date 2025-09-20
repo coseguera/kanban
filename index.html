@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microsoft Graph API Response</title>
+    <title>Kanban Board</title>
+    <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.3/lib/msal-browser.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
@@ -12,25 +13,37 @@
     <script src="js/app.js"></script>
 </head>
 <body>
-    <h1>Todo Lists</h1>
-    <button id="loginBtn">Login</button>
-    <button id="logoutBtn" disabled>Logout</button>
-    <button id="backBtn" style="display:none;">Back</button>
-    
-    <ul id="todoLists"></ul>
-    
-    <div id="todoItems" style="display:none;">
-        <h2>Not Started</h2>
-        <ul id="notStartedItems"></ul>
+    <div class="container">
+        <h1>Kanban Board</h1>
         
-        <h2>In Progress</h2>
-        <ul id="inProgressItems"></ul>
+        <div class="controls">
+            <button id="loginBtn">Login</button>
+            <button id="logoutBtn" class="logout-btn" disabled>Logout</button>
+            <button id="backBtn" class="back-btn" style="display:none;">← Back to Lists</button>
+        </div>
         
-        <h2>Completed</h2>
-        <ul id="completedItems"></ul>
+        <ul id="todoLists"></ul>
+        
+        <div id="todoItems" style="display:none;">
+            <div class="kanban-board">
+                <div class="kanban-column">
+                    <h2>📋 Not Started</h2>
+                    <ul id="notStartedItems"></ul>
+                </div>
+                
+                <div class="kanban-column">
+                    <h2>⚡ In Progress</h2>
+                    <ul id="inProgressItems"></ul>
+                </div>
+                
+                <div class="kanban-column">
+                    <h2>✅ Completed</h2>
+                    <ul id="completedItems"></ul>
+                </div>
+            </div>
+        </div>
+        
+        <pre id="response"></pre>
     </div>
-    
-    <pre id="response"></pre>
-
 </body>
 </html>
