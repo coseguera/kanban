@@ -110,3 +110,27 @@ async function updateTodoItem(msalInstance, listId, taskId, updates) {
     
     return await response.json();
 }
+
+async function deleteTodoItem(msalInstance, listId, taskId) {
+    const accounts = msalInstance.getAllAccounts();
+    const tokenRequest = {
+        scopes: ['Tasks.ReadWrite'],
+        account: accounts[0]
+    };
+
+    const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+    
+    const response = await fetch(`https://graph.microsoft.com/v1.0/me/todo/lists/${listId}/tasks/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${tokenResponse.accessToken}`
+        }
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    // DELETE returns 204 No Content on success
+    return true;
+}

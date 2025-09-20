@@ -273,6 +273,9 @@ function setupUI(msalInstance) {
                 if (e.target === modal) hideEditPopup();
             });
             
+            // Delete button event
+            document.getElementById('deleteTask').addEventListener('click', handleDeleteTask);
+            
             // Toggle button events
             setupToggleButtons();
             
@@ -301,6 +304,8 @@ function setupUI(msalInstance) {
 
     function hideEditPopup() {
         document.getElementById('editModal').style.display = 'none';
+        // Reset delete button text
+        document.getElementById('deleteTask').textContent = 'Delete Task';
     }
 
     async function handleEditSubmit(e) {
@@ -355,6 +360,38 @@ function setupUI(msalInstance) {
             hideEditPopup();
         } catch (error) {
             responseElement.textContent = `Error updating task: ${error.message}`;
+        }
+    }
+
+    async function handleDeleteTask() {
+        const form = document.getElementById('editTaskForm');
+        const taskId = form.dataset.taskId;
+        const deleteBtn = document.getElementById('deleteTask');
+        
+        // Check if this is the confirmation click
+        if (deleteBtn.textContent === 'Confirm Delete') {
+            try {
+                responseElement.textContent = 'Deleting task...';
+                await deleteTodoItem(msalInstance, currentListId, taskId);
+                
+                // Refresh the items to show the updated list
+                const data = await fetchTodoItems(msalInstance, currentListId);
+                const listName = document.querySelector('h1').textContent.replace('Items in: ', '');
+                renderTodoItems(data, listName);
+                
+                responseElement.textContent = '';
+                hideEditPopup();
+                
+                // Reset button text for next time
+                deleteBtn.textContent = 'Delete Task';
+            } catch (error) {
+                responseElement.textContent = `Error deleting task: ${error.message}`;
+                // Reset button text on error
+                deleteBtn.textContent = 'Delete Task';
+            }
+        } else {
+            // First click - change button text to confirm
+            deleteBtn.textContent = 'Confirm Delete';
         }
     }
 

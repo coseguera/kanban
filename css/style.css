@@ -436,11 +436,16 @@ button:disabled {
 
 .form-actions {
     display: flex;
-    gap: 10px;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 20px;
     padding-top: 20px;
     border-top: 2px solid #f0f0f0;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
 }
 
 .form-actions button {
@@ -467,6 +472,17 @@ button:disabled {
 
 .form-actions button[type="submit"]:hover {
     background: #555555;
+}
+
+.delete-btn {
+    background: #ffffff !important;
+    color: #666666 !important;
+    border-color: #666666 !important;
+}
+
+.delete-btn:hover {
+    background: #666666 !important;
+    color: #ffffff !important;
 }
 
 /* Toggle button styles */
