@@ -2,6 +2,8 @@ function setupUI(msalInstance) {
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const backBtn = document.getElementById('backBtn');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const newTaskTitle = document.getElementById('newTaskTitle');
     const responseElement = document.getElementById('response');
     const todoListsElement = document.getElementById('todoLists');
     const todoItemsElement = document.getElementById('todoItems');
@@ -216,10 +218,43 @@ function setupUI(msalInstance) {
         msalInstance.logoutRedirect();
     });
 
+    async function createNewTask() {
+        const title = newTaskTitle.value.trim();
+        if (!title) {
+            responseElement.textContent = 'Please enter a task title';
+            return;
+        }
+
+        try {
+            responseElement.textContent = 'Creating task...';
+            await createTodoItem(msalInstance, currentListId, title);
+            
+            // Clear the input
+            newTaskTitle.value = '';
+            
+            // Refresh the items to show the new task
+            const data = await fetchTodoItems(msalInstance, currentListId);
+            const listName = document.querySelector('h1').textContent.replace('Items in: ', '');
+            renderTodoItems(data, listName);
+            responseElement.textContent = '';
+        } catch (error) {
+            responseElement.textContent = `Error creating task: ${error.message}`;
+        }
+    }
+
+    // Event listeners
     backBtn.addEventListener('click', () => {
         document.querySelector('h1').textContent = 'Todo Lists';
         showTodoLists();
         responseElement.textContent = '';
+    });
+
+    addTaskBtn.addEventListener('click', createNewTask);
+    
+    newTaskTitle.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            createNewTask();
+        }
     });
 
     async function loadTodoItems(listId, listName) {

@@ -62,3 +62,31 @@ async function updateTodoItem(msalInstance, listId, taskId, newStatus) {
     
     return await response.json();
 }
+
+async function createTodoItem(msalInstance, listId, title) {
+    const accounts = msalInstance.getAllAccounts();
+    const tokenRequest = {
+        scopes: ['Tasks.ReadWrite'],
+        account: accounts[0]
+    };
+
+    const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+    
+    const response = await fetch(`https://graph.microsoft.com/v1.0/me/todo/lists/${listId}/tasks`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${tokenResponse.accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: title,
+            status: 'notStarted'
+        })
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    return await response.json();
+}
