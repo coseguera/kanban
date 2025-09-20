@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Graph API Response</title>
+    <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.3/lib/msal-browser.min.js"></script>
+    <script src="js/config.js"></script>
+</head>
+<body>
+    <h1>Microsoft Graph API Response</h1>
+    <button id="loginBtn">Login</button>
+    <button id="fetchBtn" disabled>Fetch /me</button>
+    <button id="logoutBtn" disabled>Logout</button>
+    <pre id="response"></pre>
+
+    <script>
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+        const loginBtn = document.getElementById('loginBtn');
+        const fetchBtn = document.getElementById('fetchBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const responseElement = document.getElementById('response');
+
+        // Handle redirect after login
+        msalInstance.handleRedirectPromise().then((response) => {
+            if (response) {
+                updateUI();
+            } else {
+                const accounts = msalInstance.getAllAccounts();
+                if (accounts.length > 0) {
+                    updateUI();
+                }
+            }
+        });
+
+        function updateUI() {
+            const accounts = msalInstance.getAllAccounts();
+            if (accounts.length > 0) {
+                loginBtn.disabled = true;
+                fetchBtn.disabled = false;
+                logoutBtn.disabled = false;
+            } else {
+                loginBtn.disabled = false;
+                fetchBtn.disabled = true;
+                logoutBtn.disabled = true;
+            }
+        }
+
+        loginBtn.addEventListener('click', async () => {
+            try {
+                responseElement.textContent = 'Redirecting to login...';
+                await msalInstance.loginPopup(loginRequest);
+                updateUI();
+                responseElement.textContent = 'Login successful!';
+            } catch (error) {
+                console.error('Login error:', error);
+                responseElement.textContent = `Login error: ${error.message}`;
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            msalInstance.logoutRedirect();
+        });
+
+        fetchBtn.addEventListener('click', async () => {
+            try {
+                responseElement.textContent = 'Loading...';
+                
+                const accounts = msalInstance.getAllAccounts();
+                const tokenRequest = {
+                    scopes: ['User.Read'],
+                    account: accounts[0]
+                };
+
+                const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+                
+                const response = await fetch('https://graph.microsoft.com/v1.0/me', {
+                    headers: {
+                        'Authorization': `Bearer ${tokenResponse.accessToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                responseElement.textContent = JSON.stringify(data, null, 2);
+                
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+            }
+        });
+
+        // Initialize UI state
+        updateUI();
+    </script>
+</body>
+</html>
