@@ -77,6 +77,12 @@ function setupUI(msalInstance) {
                     importanceStar.classList.add('normal');
                 }
                 
+                // Add click event listener to toggle importance
+                importanceStar.addEventListener('click', async (e) => {
+                    e.stopPropagation(); // Prevent drag events
+                    await toggleImportance(item.id, item.importance);
+                });
+                
                 listItem.appendChild(itemText);
                 listItem.appendChild(importanceStar);
                 
@@ -189,6 +195,20 @@ function setupUI(msalInstance) {
             responseElement.textContent = '';
         } catch (error) {
             responseElement.textContent = `Error updating task: ${error.message}`;
+        }
+    }
+
+    async function toggleImportance(taskId, currentImportance) {
+        try {
+            const newImportance = currentImportance === 'high' ? 'normal' : 'high';
+            await updateTodoItem(msalInstance, currentListId, taskId, { importance: newImportance });
+            
+            // Refresh the items to show the updated importance
+            const data = await fetchTodoItems(msalInstance, currentListId);
+            const listName = document.querySelector('h1').textContent.replace('Items in: ', '');
+            renderTodoItems(data, listName);
+        } catch (error) {
+            responseElement.textContent = `Error updating importance: ${error.message}`;
         }
     }
 

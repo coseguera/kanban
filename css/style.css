@@ -306,6 +306,9 @@ button:disabled {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transform: translateY(5px);
 }
 
 .importance-star.high {
