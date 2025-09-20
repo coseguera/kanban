@@ -1,6 +1,10 @@
 # kanban
 Kanban implementation using Microsoft To-Do as the backend
 
+![Soffee](images/soffee.jpg)
+
+*In loving memory of Soffee*
+
 ## Setup
 
 ### 1. Create an Azure Entra App Registration
