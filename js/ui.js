@@ -557,9 +557,8 @@ function setupUI(msalInstance) {
     loginBtn.addEventListener('click', async () => {
         try {
             responseElement.textContent = 'Redirecting to login...';
-            await msalInstance.loginPopup(loginRequest);
-            updateUI();
-            responseElement.textContent = 'Login successful!';
+            await msalInstance.loginRedirect(loginRequest);
+            // Note: Code after loginRedirect won't execute as the page will redirect
         } catch (error) {
             console.error('Login error:', error);
             responseElement.textContent = `Login error: ${error.message}`;
